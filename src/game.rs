@@ -134,8 +134,8 @@ impl Game {
         };
     }
 
-    pub fn winner(&self) -> &Option<Players> {
-        &self.winner
+    pub fn winner(&self) -> &Players {
+        self.winner.as_ref().unwrap()
     }
 
     pub fn turns(&self) -> usize {

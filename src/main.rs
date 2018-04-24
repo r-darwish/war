@@ -9,7 +9,7 @@ fn main() {
     game.play();
 
     println!(
-        "{:?} won in {} turns and {} wars",
+        "{:?} player won in {} turns and {} wars",
         game.winner(),
         game.turns(),
         game.wars()
