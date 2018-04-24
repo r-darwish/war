@@ -28,8 +28,12 @@ macro_rules! draw {
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new(double_deck: bool) -> Self {
         let mut deck = Deck::standard();
+        if double_deck {
+            let mut second = Deck::standard();
+            deck.append(&mut second);
+        }
         deck.shuffle();
 
         let mut game = Game {
@@ -118,10 +122,6 @@ impl Game {
                 "Blue player cards: {}, Red player cards: {}",
                 self.blue_player.number_of_cards(),
                 self.red_player.number_of_cards()
-            );
-            assert_eq!(
-                self.blue_player.number_of_cards() + self.red_player.number_of_cards(),
-                54
             );
         }
 
