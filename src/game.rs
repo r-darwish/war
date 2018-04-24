@@ -13,7 +13,6 @@ pub struct Game {
     red_player: Player,
     winner: Option<Players>,
     wars: usize,
-    done: bool,
     turns: usize,
 }
 
@@ -39,7 +38,6 @@ impl Game {
             winner: None,
             turns: 0,
             wars: 0,
-            done: false,
         };
 
         loop {
@@ -111,7 +109,7 @@ impl Game {
     }
 
     pub fn play(&mut self) {
-        if self.done {
+        if let Some(_) = self.winner {
             panic!("Game already played")
         }
 
@@ -129,9 +127,7 @@ impl Game {
 
         assert!(self.blue_player.has_lost() || self.red_player.has_lost());
 
-        self.winner = if self.blue_player.has_lost() && self.red_player.has_lost() {
-            None
-        } else if self.blue_player.has_lost() {
+        self.winner = if self.blue_player.has_lost() {
             Some(Players::Red)
         } else {
             Some(Players::Blue)
