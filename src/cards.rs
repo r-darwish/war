@@ -172,6 +172,10 @@ impl Deck {
     pub fn cards(&self) -> &Vec<Card> {
         &self.cards
     }
+
+    pub fn append(&mut self, other: &mut Self) {
+        self.cards.append(&mut other.cards);
+    }
 }
 
 #[cfg(test)]

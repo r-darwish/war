@@ -30,9 +30,7 @@ impl Player {
             return None;
         }
 
-        while let Some(card) = self.reserve_deck.draw() {
-            self.playing_deck.put(card);
-        }
+        self.playing_deck.append(&mut self.reserve_deck);
 
         assert!(self.reserve_deck.cards().is_empty());
         assert!(!self.playing_deck.cards().is_empty());
