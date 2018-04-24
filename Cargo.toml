@@ -1,0 +1,7 @@
+[package]
+name = "war"
+version = "0.1.0"
+authors = ["Roey Darwish Dror <roey.ghost@gmail.com>"]
+
+[dependencies]
+rand = "*"
