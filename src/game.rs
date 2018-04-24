@@ -1,3 +1,5 @@
+use std::io::{BufWriter, Write};
+use std::fs::File;
 use cards::{Card, Deck};
 use std::vec::Vec;
 use super::player::Player;
@@ -14,6 +16,7 @@ pub struct Game {
     winner: Option<Players>,
     wars: usize,
     turns: usize,
+    output_file: Option<BufWriter<File>>,
 }
 
 macro_rules! draw {
@@ -28,7 +31,7 @@ macro_rules! draw {
 }
 
 impl Game {
-    pub fn new(double_deck: bool) -> Self {
+    pub fn new(double_deck: bool, output_file: Option<&str>) -> Self {
         let mut deck = Deck::standard();
         if double_deck {
             let mut second = Deck::standard();
@@ -42,6 +45,7 @@ impl Game {
             winner: None,
             turns: 0,
             wars: 0,
+            output_file: output_file.map(|f| BufWriter::new(File::create(f).unwrap())),
         };
 
         loop {
@@ -65,17 +69,13 @@ impl Game {
 
     fn play_turn(&mut self) -> bool {
         let mut stake: Vec<Card> = Vec::new();
+        let mut war = false;
+
         loop {
             let blue_card = draw!(self.blue_player);
             let red_card = draw!(self.red_player);
 
             if blue_card.rank() > red_card.rank() {
-                println!(
-                    "Blue wins {:?} {:?} and takes {} cards",
-                    blue_card,
-                    red_card,
-                    stake.len() + 2
-                );
                 self.blue_player.claim(blue_card);
                 self.blue_player.claim(red_card);
                 for card in stake.drain(..) {
@@ -83,12 +83,6 @@ impl Game {
                 }
                 break;
             } else if blue_card.rank() < red_card.rank() {
-                println!(
-                    "Red wins {:?} {:?} and takes {} cards",
-                    red_card,
-                    blue_card,
-                    stake.len() + 2
-                );
                 self.red_player.claim(blue_card);
                 self.red_player.claim(red_card);
                 for card in stake.drain(..) {
@@ -96,8 +90,8 @@ impl Game {
                 }
                 break;
             } else {
+                war = true;
                 self.wars += 1;
-                println!("WAR! {:?} {:?}", red_card, blue_card);
 
                 stake.push(blue_card);
                 stake.push(red_card);
@@ -109,6 +103,16 @@ impl Game {
         }
 
         self.turns += 1;
+        if let Some(ref mut f) = self.output_file {
+            f.write(
+                format!(
+                    "{},{},{}\n",
+                    self.red_player.number_of_cards(),
+                    self.blue_player.number_of_cards(),
+                    war
+                ).as_bytes(),
+            ).unwrap();
+        }
         true
     }
 
@@ -117,13 +121,7 @@ impl Game {
             panic!("Game already played")
         }
 
-        while self.play_turn() {
-            println!(
-                "Blue player cards: {}, Red player cards: {}",
-                self.blue_player.number_of_cards(),
-                self.red_player.number_of_cards()
-            );
-        }
+        while self.play_turn() {}
 
         assert!(self.blue_player.has_lost() || self.red_player.has_lost());
 

@@ -14,9 +14,16 @@ fn main() {
                 .long("double")
                 .help("Use a double standard deck"),
         )
+        .arg(
+            Arg::with_name("output")
+                .short("o")
+                .long("output")
+                .takes_value(true)
+                .help("Output file to write the game log"),
+        )
         .get_matches();
 
-    let mut game = game::Game::new(matches.is_present("double"));
+    let mut game = game::Game::new(matches.is_present("double"), matches.value_of("output"));
     game.play();
 
     println!(
