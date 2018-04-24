@@ -1,5 +1,5 @@
 use rand::{thread_rng, Rng};
-use std::collections::VecDeque;
+use std::vec::Vec;
 
 #[derive(Debug)]
 pub enum Suit {
@@ -86,14 +86,12 @@ impl Card {
 }
 
 pub struct Deck {
-    cards: VecDeque<Card>,
+    cards: Vec<Card>,
 }
 
 impl Deck {
     pub fn new() -> Self {
-        Self {
-            cards: VecDeque::new(),
-        }
+        Self { cards: Vec::new() }
     }
 
     pub fn standard() -> Self {
@@ -160,20 +158,18 @@ impl Deck {
 
     pub fn shuffle(&mut self) {
         let mut rng = thread_rng();
-        let slices = self.cards.as_mut_slices();
-        rng.shuffle(slices.0);
-        rng.shuffle(slices.1);
+        rng.shuffle(&mut self.cards)
     }
 
     pub fn draw(&mut self) -> Option<Card> {
-        self.cards.pop_front()
+        self.cards.pop()
     }
 
     pub fn put(&mut self, card: Card) {
-        self.cards.push_back(card)
+        self.cards.push(card)
     }
 
-    pub fn cards(&self) -> &VecDeque<Card> {
+    pub fn cards(&self) -> &Vec<Card> {
         &self.cards
     }
 }
