@@ -23,13 +23,10 @@ fn main() {
         )
         .get_matches();
 
-    let mut game = game::Game::new(matches.is_present("double"), matches.value_of("output"));
-    game.play();
+    let results = game::Game::new(matches.is_present("double"), matches.value_of("output")).play();
 
     println!(
         "{:?} player won in {} turns and {} wars",
-        game.winner(),
-        game.turns(),
-        game.wars()
+        results.winner, results.turns, results.wars
     );
 }

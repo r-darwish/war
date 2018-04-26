@@ -13,10 +13,15 @@ pub enum Players {
 pub struct Game {
     blue_player: Player,
     red_player: Player,
-    winner: Option<Players>,
     wars: usize,
     turns: usize,
     output_file: Option<BufWriter<File>>,
+}
+
+pub struct GameResults {
+    pub winner: Players,
+    pub wars: usize,
+    pub turns: usize,
 }
 
 macro_rules! draw {
@@ -42,7 +47,6 @@ impl Game {
         let mut game = Game {
             blue_player: Player::new(),
             red_player: Player::new(),
-            winner: None,
             turns: 0,
             wars: 0,
             output_file: output_file.map(|f| BufWriter::new(File::create(f).unwrap())),
@@ -116,11 +120,7 @@ impl Game {
         true
     }
 
-    pub fn play(&mut self) {
-        if let Some(_) = self.winner {
-            panic!("Game already played")
-        }
-
+    pub fn play(mut self) -> GameResults {
         if let Some(ref mut f) = self.output_file {
             f.write("red_player_cards,blue_player_cards,war\n".as_bytes())
                 .unwrap();
@@ -130,23 +130,17 @@ impl Game {
 
         assert!(self.blue_player.has_lost() || self.red_player.has_lost());
 
-        self.winner = if self.blue_player.has_lost() {
-            Some(Players::Red)
+        let winner = if self.blue_player.has_lost() {
+            Players::Red
         } else {
-            Some(Players::Blue)
+            Players::Blue
         };
-    }
 
-    pub fn winner(&self) -> &Players {
-        self.winner.as_ref().unwrap()
-    }
-
-    pub fn turns(&self) -> usize {
-        self.turns
-    }
-
-    pub fn wars(&self) -> usize {
-        self.wars
+        GameResults {
+            turns: self.turns,
+            wars: self.wars,
+            winner: winner,
+        }
     }
 }
 
@@ -156,6 +150,6 @@ mod tests {
 
     #[test]
     fn construct() {
-        let mut game = Game::new();
+        let mut game = Game::new(false, None);
     }
 }
