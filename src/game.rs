@@ -121,6 +121,11 @@ impl Game {
             panic!("Game already played")
         }
 
+        if let Some(ref mut f) = self.output_file {
+            f.write("red_player_cards,blue_player_cards,war\n".as_bytes())
+                .unwrap();
+        }
+
         while self.play_turn() {}
 
         assert!(self.blue_player.has_lost() || self.red_player.has_lost());
