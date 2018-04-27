@@ -1,4 +1,6 @@
 extern crate clap;
+#[macro_use]
+extern crate enum_map;
 extern crate rand;
 
 use clap::{App, Arg};

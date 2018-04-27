@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["Roey Darwish Dror <roey.ghost@gmail.com>"]
 
 [dependencies]
+enum-map = "0.2.29"
 rand = "*"
 clap = "*"
