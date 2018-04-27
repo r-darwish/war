@@ -1,8 +1,8 @@
-use std::io::{BufWriter, Write};
-use std::fs::File;
-use cards::{Card, Deck};
-use std::vec::Vec;
 use super::player::Player;
+use cards::{Card, Deck};
+use std::fs::File;
+use std::io::{BufWriter, Write};
+use std::vec::Vec;
 
 #[derive(Debug)]
 pub enum Players {
@@ -32,7 +32,7 @@ macro_rules! draw {
                 return false;
             }
         };
-    }
+    };
 }
 
 impl Game {
