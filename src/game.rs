@@ -132,7 +132,7 @@ impl Game {
 
         let winner = self.players
             .iter()
-            .find(|(_, player)| !player.has_lost())
+            .find(|&(_, player)| !player.has_lost())
             .unwrap()
             .0;
 
