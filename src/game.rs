@@ -150,6 +150,6 @@ mod tests {
 
     #[test]
     fn construct() {
-        let mut game = Game::new(false, None);
+        Game::new(false, None).play();
     }
 }
